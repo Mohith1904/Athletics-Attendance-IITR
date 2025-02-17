@@ -52,7 +52,7 @@ Ensure that **Node.js** is installed on your local system. You can download it f
 ### **4. Set Up Firebase**
 1. Create a **Firebase** project at [Firebase Console](https://console.firebase.google.com/).
 2. Set up **Firestore Database** and configure authentication.
-3. Copy the `firebaseConfig` details from your Firebase project and add them to your React project.
+3. Copy the `firebaseConfig` details from your Firebase project and add them to your React project in **firebase.js** in src/services.
 4. Set Firestore **security rules** to restrict access. The rules file is included in the repository, so you can use it directly.
 
 ### **5. Run the Application Locally**
@@ -74,6 +74,15 @@ To ensure data security and correct access control, **Firestore security rules**
 This project is currently focused on athletics attendance. However, contributions are welcome for enhancing features, improving design, or adding new sports categories.
 
 Feel free to fork the repository and submit pull requests!
+
+<p align="center">
+  <img src="./user.png" alt="User View" width="45%"/> 
+  <img src="./admin.png" alt="Admin View" width="45%"/>
+</p>
+
+<p align="center">
+  <b>User View</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Admin View</b>
+</p>
 
 ## License
 This project is open-source under the **MIT License**. Feel free to use, modify, and distribute it.
