@@ -17,9 +17,10 @@ The **Athletics Attendance System** is a simple web-based application designed t
    - Users **cannot mark attendance twice** for the same session.
    - Geolocation **must be enabled** for both admins and users.
    - Users **must be within 100m** of the admin to mark their attendance.
+   - Users can **view** their total number of attendances till then.
    - Only users with an **IITR email** can log in.
 
-4. **Hosting & Simplicity**:
+5. **Hosting & Simplicity**:
    - The project focuses solely on attendance tracking without additional UI/UX elements.
    - Hosted on **Firebase** at: [Athletics Attendance](https://athletics-attendance.web.app/)
 
