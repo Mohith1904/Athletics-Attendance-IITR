@@ -1,70 +1,84 @@
-# Getting Started with Create React App
+# Athletics Attendance System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+The **Athletics Attendance System** is a simple web-based application designed to manage attendance efficiently for athletics sessions. The project prioritizes core functionality over design and ensures a strict authentication and attendance marking process.
 
-## Available Scripts
+## Features
+1. **Admin Privileges**:
+   - Admins are manually set in the database and cannot be modified by others.
+   - No user other than the project owner has write permissions to the admin collection.
+   
+2. **Attendance Management**:
+   - Admins can start and stop attendance sessions.
+   - If an admin starts attendance within **2 hours of a previous session**, the previous session will be reactivated instead of creating a new one.
+   - Admins can view the **total number of attendees** for all sessions on a selected day from the frontend.
+   
+3. **User Attendance Restrictions**:
+   - Users **cannot mark attendance twice** for the same session.
+   - Geolocation **must be enabled** for both admins and users.
+   - Users **must be within 100m** of the admin to mark their attendance.
+   - Only users with an **IITR email** can log in.
 
-In the project directory, you can run:
+4. **Hosting & Simplicity**:
+   - The project focuses solely on attendance tracking without additional UI/UX elements.
+   - Hosted on **Firebase** at: [Athletics Attendance](https://athletics-attendance.web.app/)
 
-### `npm start`
+## Future Enhancements
+In future updates, we plan to:
+- Improve the website's design and usability.
+- Introduce a **leave application** feature where users can upload proof of other priority tasks.
+- Expand attendance tracking to **other sports** beyond athletics.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Setup Guide
+To use this project on your own, follow these steps:
 
-### `npm test`
+### **1. Install Node.js**
+Ensure that **Node.js** is installed on your local system. You can download it from [Node.js official website](https://nodejs.org/).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### **2. Clone the Repository**
+```sh
+  git clone https://github.com/yourusername/yourrepository.git
+  cd yourrepository
+```
 
-### `npm run build`
+### **3. Install Dependencies**
+```sh
+  npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### **4. Set Up Firebase**
+1. Create a **Firebase** project at [Firebase Console](https://console.firebase.google.com/).
+2. Set up **Firestore Database** and configure authentication.
+3. Copy the `firebaseConfig` details from your Firebase project and add them to your React project.
+4. Set Firestore **security rules** to restrict access. The rules file is included in the repository, so you can use it directly.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### **5. Run the Application Locally**
+```sh
+  npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### **6. Build and Deploy (Optional)**
+To deploy the project on Firebase Hosting:
+```sh
+  npm run build
+  firebase deploy
+```
 
-### `npm run eject`
+## Firestore Rules Setup
+To ensure data security and correct access control, **Firestore security rules** are provided in the repository. Use them to set up the database restrictions correctly.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Contribution
+This project is currently focused on athletics attendance. However, contributions are welcome for enhancing features, improving design, or adding new sports categories.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Feel free to fork the repository and submit pull requests!
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## License
+This project is open-source under the **MIT License**. Feel free to use, modify, and distribute it.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+### 🔗 **Live Website**: [Athletics Attendance](https://athletics-attendance.web.app/)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
