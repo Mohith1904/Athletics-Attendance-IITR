@@ -8,14 +8,14 @@ import { getAnalytics } from "firebase/analytics";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBXap36-70Vl1SBSE9elvyKWBM9NPBim-w",
-  authDomain: "athletics-attendance.firebaseapp.com",
-  databaseURL: "https://athletics-attendance-default-rtdb.firebaseio.com",
-  projectId: "athletics-attendance",
-  storageBucket: "athletics-attendance.firebasestorage.app",
-  messagingSenderId: "822555078014",
-  appId: "1:822555078014:web:4c159f6165eea90f22172f",
-  measurementId: "G-ZTZKCHLMYS"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID",
+  measurementId: "YOUR_MEASUREMENT_ID"
 };
 
 // Initialize Firebase
