@@ -75,14 +75,17 @@ This project is currently focused on athletics attendance. However, contribution
 
 Feel free to fork the repository and submit pull requests!
 
-<p align="center">
-  <img src="./user.png" alt="User View" width="45%"/> 
-  <img src="./admin.png" alt="Admin View" width="45%"/>
-</p>
+<table align="center">
+  <tr>
+    <th>User View</th>
+    <th>Admin View</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="./user.png" alt="User View" width="200"></td>
+    <td align="center"><img src="./admin.png" alt="Admin View" width="200"></td>
+  </tr>
+</table>
 
-<p align="center">
-  <b>User View</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Admin View</b>
-</p>
 
 ## License
 This project is open-source under the **MIT License**. Feel free to use, modify, and distribute it.
