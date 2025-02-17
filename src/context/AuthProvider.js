@@ -4,7 +4,8 @@ import {
   onAuthStateChanged, 
   signOut, 
   signInWithPopup, 
-  GoogleAuthProvider, 
+  GoogleAuthProvider,
+  deleteUser,
 } from "firebase/auth";
 import app from "../services/firebase";
 import AuthContext from "./AuthContext";
@@ -28,7 +29,7 @@ const AuthProvider = ({ children }) => {
 
         // Allow only IITR emails
         if (!currentUser.email.toLowerCase().endsWith("iitr.ac.in")) {
-          await signOut(auth);
+          await deleteUser(currentUser);
           setUser(null);
           setError("Only IITR emails allowed");
           setLoading(false);
