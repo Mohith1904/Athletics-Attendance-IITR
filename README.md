@@ -77,12 +77,14 @@ Feel free to fork the repository and submit pull requests!
 
 <table align="center">
   <tr>
-    <th>User View</th>
-    <th>Admin View</th>
+    <th>Login Page</th>
+    <th>Attendance Page 1</th>
+     <th>Attendance Page 2</th>
   </tr>
   <tr>
-    <td align="center"><img src="./user.png" alt="User View" width="200"></td>
-    <td align="center"><img src="./admin.png" alt="Admin View" width="200"></td>
+      <td align="center"><img src="./login_page.png" alt="Login Page" width="200"></td>
+    <td align="center"><img src="./screen1.png" alt="Attendance Page 1" width="200"></td>
+    <td align="center"><img src="./screen2.png" alt="Attendance Page 2" width="200"></td>
   </tr>
 </table>
 
