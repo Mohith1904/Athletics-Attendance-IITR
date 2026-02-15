@@ -13,6 +13,7 @@ import {
   limit,
   getDocs,
   increment,
+  arrayUnion,
 } from "firebase/firestore";
 import ShowAttendees from "../components/ShowAttendees";
 
@@ -22,6 +23,8 @@ const HomePage = () => {
   const [attendanceEnabled, setAttendanceEnabled] = useState(false);
   const [userLocation, setUserLocation] = useState({ latitude: null, longitude: null });
   const [attendanceCount, setAttendanceCount] = useState(0);
+  const [showPersonalHistory, setShowPersonalHistory] = useState(false);
+  const [personalAttendance, setPersonalAttendance] = useState([]);
 
   // 1. UseEffect to fetch user details and the latest attendance session
   useEffect(() => {
@@ -93,6 +96,20 @@ const HomePage = () => {
   if (!isAdmin) return;
   await getLocation();
   if (!userLocation.latitude) return;
+
+  // Get admin name from Firestore user document
+  let adminName = "Admin";
+  try {
+    const userDocRef = doc(db, "Users", user.email.replace(/[@.]/g, "_"));
+    const userDocSnap = await getDoc(userDocRef);
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      adminName = userData.displayName || user.email.split('@')[0] || "Admin";
+    }
+  } catch (error) {
+    console.error("Error fetching admin name:", error);
+  }
+
   const attendanceRef = collection(db, "attendance");
   const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
   let sessionRef;
@@ -131,7 +148,7 @@ const HomePage = () => {
         enabled: true,
         adminLocation: userLocation,
         timestamp: new Date(),
-        startAdminName: user?.displayName || "Unknown"
+        startAdminName: adminName
       },
       { merge: true }
     );
@@ -172,17 +189,25 @@ const HomePage = () => {
     if (attendeeDoc.exists()) return alert("You have already marked attendance");
 
     // Mark attendance
+    const attendanceRecord = {
+      sessionId: sessionDoc.id,
+      timestamp: new Date(),
+      distance: distance,
+      adminName: sessionData.startAdminName || "Unknown",
+      adminLocation: sessionData.adminLocation
+    };
+
     await setDoc(attendeesRef, {
       name: user.displayName,
       email: user.email,
-      timestamp: new Date(),
-      distance: distance,
+      ...attendanceRecord,
     });
 
-    // Increase user's attendanceCount in "Users" collection
+    // Increase user's attendanceCount and add to attendances array in "Users" collection
     const userRef = doc(db, "Users", user.email.replace(/[@.]/g, "_"));
     await updateDoc(userRef, {
       attendanceCount: increment(1),
+      attendances: arrayUnion(attendanceRecord)
     });
     setAttendanceCount(prevCount => prevCount + 1);
     alert("Attendance marked successfully");
@@ -203,22 +228,80 @@ const HomePage = () => {
     return R * c;
   };
 
+  // Fetch personal attendance history
+  const fetchPersonalAttendance = async () => {
+    if (!user) return;
+    try {
+      const userDocRef = doc(db, "Users", user.email.replace(/[@.]/g, "_"));
+      const userDocSnap = await getDoc(userDocRef);
+      if (userDocSnap.exists()) {
+        const data = userDocSnap.data();
+        setPersonalAttendance(data.attendances || []);
+      } else {
+        setPersonalAttendance([]);
+      }
+      setShowPersonalHistory(true);
+    } catch (error) {
+      console.error("Error fetching personal attendance:", error);
+      alert("Error fetching attendance history");
+    }
+  };
+
   return (
-    <div>
-      <h1>Welcome, {user?.displayName || "Guest"}</h1>
+    <div style={{ fontFamily: 'Arial, sans-serif', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', minHeight: '100vh', padding: '20px', color: 'white' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <header style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <h1 style={{ fontSize: '3rem', margin: '0', textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>🏃‍♂️ Athletics Attendance</h1>
+          <p style={{ fontSize: '1.2rem', opacity: 0.9 }}>Track your progress and stay committed!</p>
+        </header>
 
-      <p>Total Attendances: {attendanceCount}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '30px', borderRadius: '15px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <h3 style={{ marginTop: '0', color: '#FFD700' }}>Your Stats</h3>
+            <p style={{ fontSize: '2rem', fontWeight: 'bold', margin: '10px 0' }}>{attendanceCount}</p>
+            <p>Total Attendances</p>
+          </div>
 
-      <button onClick={markAttendance}>Mark Attendance</button>
+          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '30px', borderRadius: '15px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <h3 style={{ marginTop: '0', color: '#FFD700' }}> Quick Actions</h3>
+            <button onClick={markAttendance} style={{ background: 'linear-gradient(45deg, #4CAF50, #45a049)', color: 'white', padding: '15px 30px', border: 'none', borderRadius: '25px', margin: '10px 5px', fontSize: '1rem', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', transition: 'all 0.3s' }} onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'} onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}>Mark Attendance</button>
+            <button onClick={fetchPersonalAttendance} style={{ background: 'linear-gradient(45deg, #2196F3, #1976d2)', color: 'white', padding: '15px 30px', border: 'none', borderRadius: '25px', margin: '10px 5px', fontSize: '1rem', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', transition: 'all 0.3s' }} onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'} onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}>View My History</button>
+            <button onClick={logout} style={{ background: 'linear-gradient(45deg, #f44336, #d32f2f)', color: 'white', padding: '15px 30px', border: 'none', borderRadius: '25px', margin: '10px 5px', fontSize: '1rem', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', transition: 'all 0.3s' }} onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'} onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}>Logout</button>
+          </div>
 
-      {isAdmin && (
-        <button onClick={toggleAttendance}>
-          {attendanceEnabled ? "Stop Attendance" : "Start Attendance"}
-        </button>
-      )}
+          {isAdmin && (
+            <div style={{ background: 'rgba(255,255,255,0.1)', padding: '30px', borderRadius: '15px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <h3 style={{ marginTop: '0', color: '#FFD700' }}>Admin Controls</h3>
+              <button onClick={toggleAttendance} style={{ background: attendanceEnabled ? 'linear-gradient(45deg, #f44336, #d32f2f)' : 'linear-gradient(45deg, #4CAF50, #45a049)', color: 'white', padding: '15px 30px', border: 'none', borderRadius: '25px', margin: '10px 5px', fontSize: '1rem', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', transition: 'all 0.3s' }} onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'} onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}>
+                {attendanceEnabled ? "Stop Attendance ❌" : "Start Attendance ✅"}
+              </button>
+            </div>
+          )}
+        </div>
 
-      <button onClick={logout}>Logout</button>
-      {isAdmin && <ShowAttendees />}
+        {showPersonalHistory && (
+          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '30px', borderRadius: '15px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', marginBottom: '20px' }}>
+            <h3 style={{ color: '#FFD700', marginTop: '0' }}>📅 Your Attendance History</h3>
+            {personalAttendance.length === 0 ? (
+              <p>No attendance records found.</p>
+            ) : (
+              <div style={{ display: 'grid', gap: '15px' }}>
+                {personalAttendance.map((att, index) => (
+                  <div key={index} style={{ background: 'rgba(255,255,255,0.05)', padding: '15px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <p><strong>Date:</strong> {att.timestamp?.toDate().toLocaleDateString()}</p>
+                    <p><strong>Time:</strong> {att.timestamp?.toDate().toLocaleTimeString()}</p>
+                    <p><strong>Admin:</strong> {att.adminName || 'Unknown'}</p>
+                    <p><strong>Distance:</strong> {att.distance ? `${att.distance.toFixed(2)}m` : 'N/A'}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+            <button onClick={() => setShowPersonalHistory(false)} style={{ background: 'linear-gradient(45deg, #FF9800, #e68900)', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '20px', marginTop: '20px', cursor: 'pointer' }}>Close</button>
+          </div>
+        )}
+
+        {isAdmin && <ShowAttendees />}
+      </div>
     </div>
   );
 };
